@@ -1,1 +1,1 @@
-from .SimpleKeylogger import SimpleKeylogger
+from .simple_keylogger import SimpleKeylogger

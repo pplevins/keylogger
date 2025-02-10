@@ -3,8 +3,8 @@ import time
 
 from keylogger.encryptors import XorEncryption
 from keylogger.keyloggers import SimpleKeylogger
-from keylogger.log_writers import ConsoleLogWriter
-from keylogger.log_writers import FileLogWriter
+from keylogger.logwriters import ConsoleLogWriter
+from keylogger.logwriters import FileLogWriter
 
 keylogger = SimpleKeylogger()
 log_writer = ConsoleLogWriter()

@@ -3,7 +3,8 @@ from abc import ABC, abstractmethod
 
 class KeyloggerInterface(ABC):
     """The KeyloggerInterface class is an abstract class that defines the interface for keylogger. It provides basic
-    functionality and methods to implement by any keylogger mechanism."""
+    functionality and methods to implement by any keylogger mechanism.
+    """
 
     @abstractmethod
     def start(self):

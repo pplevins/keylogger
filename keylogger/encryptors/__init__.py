@@ -1,1 +1,1 @@
-from .XorEncryption import XorEncryption
+from .xor_encryption import XorEncryption

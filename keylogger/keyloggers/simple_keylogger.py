@@ -3,7 +3,7 @@ from pynput import keyboard
 
 
 def key_to_char(key):
-    """Converts a pynput key to a printable character."""
+    """Utility method that converts a pynput key to a printable character."""
     if isinstance(key, keyboard.KeyCode):
         return key.char  # Regular key (letters, numbers, symbols)
 
