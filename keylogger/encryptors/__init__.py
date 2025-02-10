@@ -1,0 +1,1 @@
+from .XorEncryption import XorEncryption
