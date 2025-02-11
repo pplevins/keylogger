@@ -20,6 +20,8 @@ def key_to_char(key):
 
 
 class SimpleKeylogger(KeyloggerInterface):
+    """keylogger implementation using pynput keyboard."""
+
     def __init__(self):
         self.buffer = []
         self.running = False

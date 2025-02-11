@@ -7,7 +7,7 @@ from keylogger.interfaces import LogWriterInterface
 class FileLogWriter(LogWriterInterface):
     """Writes logs to a txt file."""
 
-    def __init__(self, file_name):
+    def __init__(self, file_name='logfile'):
         self.file_path = f'logs/{file_name}.txt'
         self._ensure_file_exists()
 
