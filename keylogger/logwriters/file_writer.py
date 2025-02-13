@@ -18,8 +18,10 @@ class FileLogWriter(LogWriterInterface):
                 file.write(f"--- Log File Created: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} ---\n")
 
     def write_log(self, log):
-        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        # timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         with open(self.file_path, "a", encoding="utf-8") as file:
-            file.write(f"[{timestamp}]\n")
-            for key, text in log.items():
-                file.write(f"on {key} window: " + text + "\n")
+            # file.write(f"[{timestamp}]\n")
+            # for key, text in log.items():
+                # file.write(f"on {key} window: " + text + "\n")
+            file.write(str(log) + '\n')
+
