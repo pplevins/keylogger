@@ -8,4 +8,6 @@ class ConsoleLogWriter(LogWriterInterface):
 
     def write_log(self, log):
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        print(f"[{timestamp}] Keystrokes: {log}")
+        print(f"[{timestamp}]\n")
+        for key, text in log.items():
+            print(f"on {key} window: {text}")

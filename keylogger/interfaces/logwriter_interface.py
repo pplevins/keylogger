@@ -7,6 +7,6 @@ class LogWriterInterface(ABC):
     """
 
     @abstractmethod
-    def write_log(self, log: str):
+    def write_log(self, log: dict) -> dict:
         """Writes the log data."""
         pass
