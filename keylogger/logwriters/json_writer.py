@@ -19,9 +19,9 @@ class JsonLogWriter(LogWriterInterface):
                 json.dump({}, file)
 
     def write_log(self, log):
-        with open(self.file_path, "r")as file:
+        with open(self.file_path, "r", encoding="utf-8")as file:
             logs = json.load(file)
         logs.update(log)
 
-        with open(self.file_path, "w") as file:
-            json.dump(logs, file, indent=4)
+        with open(self.file_path, "w", encoding="utf-8") as file:
+            json.dump(logs, file, indent=4, ensure_ascii=False)
