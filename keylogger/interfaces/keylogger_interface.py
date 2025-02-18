@@ -2,21 +2,37 @@ from abc import ABC, abstractmethod
 
 
 class KeyloggerInterface(ABC):
-    """The KeyloggerInterface class is an abstract class that defines the interface for keylogger. It provides basic
-    functionality and methods to implement by any keylogger mechanism.
+    """
+    Abstract base class for a keylogger.
+
+    This interface defines the basic methods required for a keylogger implementation,
+    ensuring that any concrete class will provide necessary functionality.
     """
 
     @abstractmethod
-    def start(self):
-        """Keylogger starting."""
+    def start(self) -> None:
+        """
+        Starts the keylogger.
+
+        This method should initialize the keylogging mechanism and begin capturing keystrokes.
+        """
         pass
 
     @abstractmethod
-    def stop(self):
-        """Keylogger stopping."""
+    def stop(self) -> None:
+        """
+        Stops the keylogger.
+
+        This method should terminate the keylogging process and ensure proper cleanup.
+        """
         pass
 
     @abstractmethod
-    def get_log(self):
-        """get the buffered log of the keystroke."""
+    def get_log(self) -> dict:
+        """
+        Retrieves the buffered log of recorded keystrokes.
+
+        Returns:
+            dict: A dictionary representation of all logged keystrokes ,formatted in a dictionary.
+        """
         pass

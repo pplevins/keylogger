@@ -2,11 +2,19 @@ from abc import ABC, abstractmethod
 
 
 class LogWriterInterface(ABC):
-    """The LogWriterInterface class is an abstract base class that the interface for the log writers. It provides basic
-    functionality and methods to implement by any log writer mechanism.
+    """
+    Abstract base class for log writers.
+
+    This interface defines the contract for any log writer implementation,
+    ensuring a consistent method for writing log data.
     """
 
     @abstractmethod
-    def write_log(self, log: dict) -> dict:
-        """Writes the log data."""
+    def write_log(self, log: dict) -> None:
+        """
+        Writes the log data to the specified destination.
+
+        Args:
+            log (dict): The log data containing captured keystrokes and associated metadata.
+        """
         pass

