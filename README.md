@@ -50,14 +50,13 @@ Below is the **logical flow** of how the system operates:
 
 ```mermaid
 graph TD;
-    A[Start] -->|Initialize Components| B[KeyLoggerManager]
-    B --> |Start Keylogger| C[SimpleKeylogger Captures Keystrokes]
-    C --> D[Application Focus Logging]
-    D --> E[Store Logs in Buffer]
-    E --> |Every X Seconds| F[Encrypt Logs]
-    F --> G[Write Logs to Output (Console, File, JSON)]
-    G -->|Repeat Until Stopped| B
-    B -->|Stop Keylogger| H[End]
+    A[Keylogger Manager] -->|Collect Keystrokes| B[Keystroke Buffer];
+    B -->|Fetch Active Window| C[Attach Application Name];
+    C -->|Optional Encryption| D[Encrypted Data];
+    D -->|Write Logs| E{Log Writers};
+    E -->|Console| F[Console Output];
+    E -->|File| G[TXT Log File];
+    E -->|JSON| H[JSON Log File];
 ```
 
 ## Installation & Setup
