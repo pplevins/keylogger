@@ -21,6 +21,7 @@ def upload():
     machine_dir = os.path.join(logs_dir, machine_name)
     os.makedirs(machine_dir, exist_ok=True)
 
+    # TODO: Change the structure of the data, so it will be separate json for each day.
     log_file = os.path.join(machine_dir, f"{machine_name}.json")
 
     if not os.path.exists(log_file):
