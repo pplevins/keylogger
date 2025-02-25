@@ -31,27 +31,26 @@ class XorEncryption(EncryptorInterface):
             data (str): The plaintext string to encrypt.
 
         Returns:
-            str: The encrypted string.
+            str: The encrypted data represented as integers in a string.
 
         Note:
-            XOR is reversible, meaning the same method can be used for decryption.
+            XOR is reversible, meaning the same method can be used for decryption (not in our case).
         """
-        return "".join(chr(ord(c) ^ ord(self.key[i % len(self.key)])) for i, c in
-                       enumerate(data))  # TODO: Change return type to list of numbers for accurate decryption.
+        return "-".join(str(ord(c) ^ ord(self.key[i % len(self.key)])) for i, c in enumerate(data))
 
     def decrypt(self, data: str) -> str:
         """
         Decrypts the given string using XOR.
 
         Args:
-            data (str): The encrypted string.
+            data (str): The encrypted data represented as integers in a string.
 
         Returns:
             str: The decrypted plaintext.
         Note:
-            Since XOR is symmetrical, the same function is used for both encryption and decryption.
+            Since XOR is symmetrical, the same function is used for both encryption and decryption (not in our case).
         """
-        return self.encrypt(data)  # XOR is reversible with the same operation
+        return "".join(chr(int(c) ^ ord(self.key[i % len(self.key)])) for i, c in enumerate(data.split("-")))
 
     def _recursive_encrypt_dict(self, enc_func, logs_dict: dict, encrypted_dict: dict) -> None:
         """

