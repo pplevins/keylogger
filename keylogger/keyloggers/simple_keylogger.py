@@ -112,6 +112,7 @@ class SimpleKeylogger(KeyloggerInterface):
         try:
             active_window = gw.getActiveWindow()
             return str(active_window.title) if active_window else "Unknown"
+            # TODO: remove the chars in the beginning and end of the returned title.
         except Exception as e:
             print(f"Error getting active window: {e}")
             return "Unknown"

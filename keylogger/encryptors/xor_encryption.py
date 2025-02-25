@@ -36,7 +36,8 @@ class XorEncryption(EncryptorInterface):
         Note:
             XOR is reversible, meaning the same method can be used for decryption.
         """
-        return "".join(chr(ord(c) ^ ord(self.key[i % len(self.key)])) for i, c in enumerate(data))
+        return "".join(chr(ord(c) ^ ord(self.key[i % len(self.key)])) for i, c in
+                       enumerate(data))  # TODO: Change return type to list of numbers for accurate decryption.
 
     def decrypt(self, data: str) -> str:
         """
