@@ -1,7 +1,7 @@
-from keylogger.interfaces import LogWriterInterface
+from keylogger.interfaces import ILogWriter
 
 
-class ConsoleLogWriter(LogWriterInterface):
+class ConsoleLogWriter(ILogWriter):
     """
     Writes logs to the console in a human-readable format.
 

@@ -1,10 +1,10 @@
 import json
 import os
 
-from keylogger.interfaces import LogWriterInterface
+from keylogger.interfaces import ILogWriter
 
 
-class JsonLogWriter(LogWriterInterface):
+class JsonLogWriter(ILogWriter):
     """
     Writes logs to a json file in a structured format.
 

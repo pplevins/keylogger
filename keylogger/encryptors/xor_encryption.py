@@ -1,7 +1,7 @@
-from keylogger.interfaces import EncryptorInterface
+from keylogger.interfaces import IEncryptor
 
 
-class XorEncryption(EncryptorInterface):
+class XorEncryption(IEncryptor):
     """
     Implements simple XOR encryption.
 

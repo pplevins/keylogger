@@ -1,8 +1,7 @@
 from abc import ABC, abstractmethod
 
 
-# TODO: change name conventions in all interfaces to Java convention (IEncryptor, IWriter, etc.)
-class KeyloggerInterface(ABC):
+class IKeylogger(ABC):
     """
     Abstract base class for a keylogger.
 

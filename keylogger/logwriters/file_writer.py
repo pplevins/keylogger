@@ -1,10 +1,10 @@
 import os
 from datetime import datetime
 
-from keylogger.interfaces import LogWriterInterface
+from keylogger.interfaces import ILogWriter
 
 
-class FileLogWriter(LogWriterInterface):
+class FileLogWriter(ILogWriter):
     """
     Writes logs to a text file in a structured, readable format.
 

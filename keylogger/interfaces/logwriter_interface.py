@@ -1,8 +1,7 @@
 from abc import ABC, abstractmethod
 
 
-# TODO: change name conventions in all interfaces to Java convention (IEncryptor, IWriter, etc.)
-class LogWriterInterface(ABC):
+class ILogWriter(ABC):
     """
     Abstract base class for log writers.
 

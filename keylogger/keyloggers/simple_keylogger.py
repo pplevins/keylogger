@@ -1,4 +1,4 @@
-from keylogger.interfaces import KeyloggerInterface
+from keylogger.interfaces import IKeylogger
 from pynput import keyboard
 import pygetwindow as gw
 
@@ -28,7 +28,7 @@ def key_to_char(key) -> str:
     return special_keys.get(key, f"[{key.name}]")  # Default for unknown keys
 
 
-class SimpleKeylogger(KeyloggerInterface):
+class SimpleKeylogger(IKeylogger):
     """
     A simple keylogger implementation using the pynput library.
 

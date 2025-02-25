@@ -1,3 +1,3 @@
-from .logwriter_interface import LogWriterInterface
-from .keylogger_interface import KeyloggerInterface
-from .encryptor_interface import EncryptorInterface
+from .logwriter_interface import ILogWriter
+from .keylogger_interface import IKeylogger
+from .encryptor_interface import IEncryptor
