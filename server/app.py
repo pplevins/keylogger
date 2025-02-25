@@ -1,12 +1,13 @@
 import json
 import os
+from datetime import datetime
 
 from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 
-logs_dir = "data"
-os.makedirs(logs_dir, exist_ok=True)
+LOGS_DIR = "data"
+os.makedirs(LOGS_DIR, exist_ok=True)
 
 
 @app.route('/api/upload', methods=['POST'])
@@ -18,10 +19,10 @@ def upload():
     if not machine_name or not log:
         return jsonify({"error": "Invalid Data"}), 400
 
-    machine_dir = os.path.join(logs_dir, machine_name)
+    machine_dir = os.path.join(LOGS_DIR, machine_name)
     os.makedirs(machine_dir, exist_ok=True)
 
-    log_file = os.path.join(machine_dir, f"{machine_name}.json")
+    log_file = os.path.join(machine_dir, f"{datetime.now().strftime('%Y-%m-%d')}.json")
 
     if not os.path.exists(log_file):
         with open(log_file, "w", encoding="utf-8") as file:
@@ -37,6 +38,20 @@ def upload():
         json.dump(logs, file, indent=4, ensure_ascii=False)
 
     return jsonify({"massage": "Log received"}), 200
+
+
+@app.route('/api/machines', methods=['GET'])
+def list_machines():
+    """Returns a list of all machine names (directories in the 'data' folder)."""
+    if not os.path.exists(LOGS_DIR):
+        return jsonify({"machines": []})  # Return empty if no data directory exists
+
+    machines = [
+        d for d in os.listdir(LOGS_DIR)
+        if os.path.isdir(os.path.join(LOGS_DIR, d))  # Ensure it's a directory
+    ]
+
+    return jsonify({"machines": machines}), 200
 
 
 if __name__ == "__main__":
