@@ -3,8 +3,8 @@
 ## Overview
 
 This project is a modular **Keylogger System** designed to **capture keystrokes**, **encrypt logs**, and **store them
-securely** in multiple formats. It follows a **flexible and extensible architecture** with clear separation of concerns,
-allowing easy modification and expansion.
+securely** in multiple formats. It includes a **Flask API** for log retrieval, **user authentication**, and a *
+*web-based UI** for log management.
 
 ## Features
 
@@ -15,7 +15,11 @@ allowing easy modification and expansion.
     - **ConsoleLogWriter** – Displays logs in the console.
     - **FileLogWriter** – Stores logs in a `.txt` file.
     - **JsonLogWriter** – Saves logs in a structured JSON format.
+    - **ServerLogWriter** – Sends logs to a **Flask API** for remote storage.
 - **Configurable Log Interval** – Periodically processes and writes logs every **X seconds**.
+- **Web-Based UI** – Displays captured logs with filtering, sorting, and searching.
+- **User Authentication** – Simple password-based authentication ensures **only authorized users** can access logs.
+- **User-Supplied Decryption** – Logs are **decrypted on the server** using a key provided by the user.
 - **Thread-Safe Design** – Atomic operations ensure safe execution.
 - **Flexible and Extensible** – Supports additional log writers, encryption mechanisms, and output destinations.
 
@@ -38,9 +42,20 @@ keylogger_project/
 │   │   ├── ConsoleLogWriter.py     # Writes logs to console
 │   │   ├── FileLogWriter.py        # Writes logs to a text file
 │   │   ├── JsonLogWriter.py        # Writes logs to JSON
+│   │   ├── ServerLogWriter.py      # Sends logs to Flask API
 │   ├── manager/
-│   │   ├── KeyLoggerManager.py     # Central component that collects and processes logs
-│── main.py                         # Initializes and runs the keylogger system
+│   │   ├── KeyLoggerManager.py     # Collects, encrypts, and sends logs
+│── server/
+│   ├── app.py                      # Flask API for log retrieval and authentication
+│   ├── data/                        # Stores encrypted logs per machine
+│   ├── static/
+│   │   ├── scripts/
+│   │   │   ├── script.js            # Handles API requests and UI interactions
+│   │   ├── styles/
+│   │   │   ├── style.css            # Styling for the UI
+│   ├── templates/
+│   │   ├── index.html               # Main frontend interface
+│── main.py                          # Initializes and runs the keylogger system
 │── README.md                        # Project documentation
 ```
 
@@ -53,10 +68,11 @@ graph TD;
     A[Keylogger Manager] -->|Collect Keystrokes| B[Keystroke Buffer];
     B -->|Fetch Active Window| C[Attach Application Name];
     C -->|Optional Encryption| D[Encrypted Data];
-    D -->|Write Logs| E{Log Writers};
-    E -->|Console| F[Console Output];
-    E -->|File| G[TXT Log File];
-    E -->|JSON| H[JSON Log File];
+    D -->|Send to Server| E[Flask API];
+    E -->|Store Logs| F[File System (Per Machine)];
+    F -->|Retrieve Logs| G[Web Interface];
+    G -->|User-Supplied Key| H[Server Decryption];
+    H -->|Display Logs| I[Web Dashboard];
 ```
 
 ## Installation & Setup
@@ -71,35 +87,84 @@ pip install -r requirements.txt
 
 ### Running the Keylogger
 
-To start the system, execute:
+To start the keylogger agent:
 
 ```bash
 python main.py
 ```
 
-### Configuration Options
+### Running the Flask Server
 
-Modify the `KeyLoggerManager` settings in `main.py` to change:
+```bash
+python server/app.py
+```
 
-- **Logging interval** (default: 10 seconds)
-- **Output format** (Console, File, JSON)
-- **Encryption method** (default: XOR)
+### Accessing the Web UI
+
+Navigate to the **URL where the Flask server is running**. By default, if running locally, access:
+
+```
+http://127.0.0.1:5000/
+```
+
+The web dashboard allows users to:
+
+- View keystrokes per machine.
+- Filter by **date, active window, or specific text**.
+- Sort the data by **timestamp, window, or keystrokes**.
+- Provide a **decryption key** to retrieve logs in plain text.
+
+## Authentication & Log Retrieval
+
+### **Login System**
+
+Before accessing logs, users must **log in** using a simple password-based authentication system. If the correct
+password is entered, access to logs is granted.
+
+### **Fetching Keystrokes (With User-Supplied Decryption Key)**
+
+To retrieve logs, the user must **provide a decryption key** via the web UI or API.
+
+#### **API Endpoint:**
+
+```http
+GET /api/get_keystrokes?machine=computer1&key=my_secret_key
+```
+
+#### **Example Response:**
+
+```json
+{
+  "machine": "computer1",
+  "logs": {
+    "2025-02-26 14:05:01": {
+      "VS Code": "Hello World"
+    },
+    "2025-02-26 14:10:30": {
+      "Chrome": "Google Search: Flask API"
+    }
+  }
+}
+```
 
 ## How It Works
 
 1. `KeyLoggerManager` starts and initializes components.
 2. `SimpleKeylogger` captures **keystrokes** and **active application**.
-3. Logs are stored in an **internal buffer**.
-4. Every **X seconds**, logs are **retrieved, timestamped, encrypted, and written** to output files.
-5. The process repeats until the system is manually stopped.
+3. Logs are **encrypted** before being sent to the Flask API.
+4. The server **stores logs per machine**.
+5. Users retrieve logs via the **web interface**.
+6. The **user provides a decryption key**, which the server uses to decrypt and return plaintext logs.
 
 ## Future Enhancements
 
-- **Support for Asynchronous Execution (`asyncio`)**
-- **More Advanced Encryption (AES, RSA)**
-- **Remote Log Transmission (Network Writer, Cloud Storage)**
-- **Data retrieval and view via Web Interface**
+- **Stronger Encryption (AES, RSA)**
+- **Cloud-Based Log Storage**
+- **Real-Time Log Monitoring**
+- **More User Roles & Access Controls** (JWT-based authentication for enhanced security)
+- **Log Visualization (Graphs & Charts)**
 
 ---
 **Disclaimer:** This tool is for educational and security research purposes only. Unauthorized usage may violate privacy
 laws.
+
