@@ -15,9 +15,17 @@ def key_to_char(key) -> str:
     Returns:
         str: A printable character or a formatted representation for special keys.
     """
-    if isinstance(key, keyboard.KeyCode):
-        return key.char  # Regular key (letters, numbers, symbols)
+    numpad_map = {
+        96: "0", 97: "1", 98: "2", 99: "3", 100: "4",
+        101: "5", 102: "6", 103: "7", 104: "8", 105: "9",
+        110: "."  # מקש הנקודה (.) ב-Numpad
+    }
 
+    if isinstance(key, keyboard.KeyCode):
+        if key.vk is not None:
+            if key.vk in numpad_map:  # אם זה מספר מה-Numpad
+                return numpad_map[key.vk]
+            return str(key.char) if key.char else ""  # אחרת, להחזיר את התו הרגיל
     # Mapping for special keys
     special_keys = {
         keyboard.Key.space: " ",
