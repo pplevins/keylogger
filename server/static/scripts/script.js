@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const filterForm = document.getElementById('filterForm');
     const applyFilterBtn = document.getElementById('applyFilter');
     const clearFilterBtn = document.getElementById('clearFilter');
+    const searchInput = document.getElementById('searchInput');
     let sortDirection = {};
 
     loginForm.addEventListener('submit', function (event) {
@@ -35,6 +36,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 data.machines.forEach(machine => {
                     const computerCard = document.createElement('div');
                     computerCard.classList.add('computer-card');
+                    computerCard.dataset.machine = machine;
                     computerCard.innerHTML = `<h3>${machine}</h3>`;
                     computerCard.addEventListener('click', () => openKeystrokesModal(machine));
                     computersContainer.appendChild(computerCard);
@@ -140,4 +142,20 @@ document.addEventListener('DOMContentLoaded', function () {
             rows.forEach(row => keystrokesTableBody.appendChild(row));
         });
     });
+
+    /** Search Input */
+    searchInput.addEventListener('input', function () {
+        const searchValue = searchInput.value.toLowerCase();
+        const computerCards = computersContainer.getElementsByClassName('computer-card');
+        Array.from(computerCards).forEach(card => {
+            const machineName = card.dataset.machine.toLowerCase();
+            if (machineName.includes(searchValue)) {
+                card.style.display = '';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    });
+
+    fetchComputers();
 });
