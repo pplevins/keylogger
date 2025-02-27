@@ -69,7 +69,7 @@ graph TD;
     B -->|Fetch Active Window| C[Attach Application Name];
     C -->|Optional Encryption| D[Encrypted Data];
     D -->|Send to Server| E[Flask API];
-    E -->|Store Logs| F[File System (Per Machine)];
+    E -->|Store Logs| F[File System - Per Machine];
     F -->|Retrieve Logs| G[Web Interface];
     G -->|User-Supplied Key| H[Server Decryption];
     H -->|Display Logs| I[Web Dashboard];
