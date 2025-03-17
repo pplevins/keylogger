@@ -3,8 +3,7 @@
 ## Overview
 
 This project is a modular **Keylogger System** designed to **capture keystrokes**, **encrypt logs**, and **store them
-securely** in multiple formats. It includes a **Flask API** for log retrieval, **user authentication**, and a *
-*web-based UI** for log management.
+securely** in multiple formats. It includes a **Flask API** for log retrieval, **user authentication**, and a **web-based UI** for log management.
 
 ## Features
 
